@@ -94,16 +94,16 @@ async function updateIndexPage(journal) {
         name: indexName,
         type: "text",
         text: {
-          content,
           format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN,
+          markdown: content,
         },
       },
     ]);
   } else {
     await indexPage.update({
       text: {
-        content,
         format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN,
+        markdown: content,
       },
     });
   }
@@ -133,8 +133,8 @@ async function logCombat(combat, messages) {
       name: timestamp,
       type: "text",
       text: {
-        content,
         format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN,
+        markdown: content,
       },
     },
   ]);
