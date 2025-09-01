@@ -4,7 +4,7 @@
   "description": "Adds a combat log for Pathfinder 2E in Foundry VTT.",
   "version": "0.1.0",
   "authors": [
-    { "name": "Contributor" }
+    { "name": "Kazgul1987" }
   ],
   "esmodules": ["scripts/main.js"],
   "packs": [],
