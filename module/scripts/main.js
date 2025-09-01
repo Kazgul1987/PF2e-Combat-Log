@@ -124,7 +124,12 @@ async function logCombat(combat, messages) {
       return `| @UUID[${uuid}]{${name}} | ${c.initiative ?? ""} |`;
     })
     .join("\n");
-  const chatLog = messages.map((m) => `> ${m.content ?? m}`).join("\n");
+  const chatLog = messages
+    .map((m) => {
+      const flavor = m.flavor ? `${m.flavor}: ` : "";
+      return `> ${flavor}${m.content ?? ""}`;
+    })
+    .join("\n");
   const content =
     `## ${timestamp}\n\n| Combatant | Initiative |\n| --- | --- |\n${rows}` +
     (chatLog ? `\n\n### Chat Log\n${chatLog}` : "");
