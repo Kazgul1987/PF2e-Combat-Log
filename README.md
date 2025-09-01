@@ -21,7 +21,11 @@ A simple [Foundry VTT](https://foundryvtt.com/) module for the Pathfinder Second
 - When the encounter finishes, the module creates a new page in the **Combat Log** journal with the initiative table and chat log.
 
 ## Development
-The module's source lives in the `module/` directory. To package the module, zip the `module` folder and distribute it together with `module.json`.
+1. Make changes in the `module/` directory.
+2. Run any build scripts if necessary to prepare assets.
+3. Zip the contents of `module/`, ensuring `module.json` is at the root.
+4. Upload the resulting archive to GitHub Releases.
+5. For manual installation, place the archive in Foundry's `Data/modules` folder so Foundry recognizes it.
 
 ## Contributing
 
