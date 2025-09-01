@@ -1,0 +1,16 @@
+{
+  "name": "pf2e-combat-log",
+  "title": "PF2e Combat Log",
+  "description": "Adds a combat log for Pathfinder 2E in Foundry VTT.",
+  "version": "0.1.0",
+  "authors": [
+    { "name": "Contributor" }
+  ],
+  "esmodules": ["scripts/main.js"],
+  "packs": [],
+  "languages": [],
+  "compatibility": {
+    "minimum": "10",
+    "verified": "10"
+  }
+}
