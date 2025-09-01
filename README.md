@@ -23,6 +23,17 @@ A simple [Foundry VTT](https://foundryvtt.com/) module for the Pathfinder Second
 ## Development
 The module's source lives in the `module/` directory. To package the module, zip the `module` folder and distribute it together with `module.json`.
 
+## Contributing
+
+Contributions are welcome!
+
+1. Fork the repository on GitHub and clone your fork.
+2. Create a new branch, make your changes, and push to your fork.
+3. Submit a pull request describing your changes.
+4. Report bugs or request features by opening an issue with details and steps to reproduce.
+
+For more information, see [CONTRIBUTING.md](CONTRIBUTING.md) when it is added.
+
 ## License
 
 Released under the MIT License.
