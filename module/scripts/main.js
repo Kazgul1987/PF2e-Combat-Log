@@ -126,7 +126,7 @@ async function logCombat(combat, messages) {
     .join("\n");
   const chatLog = messages.map((m) => `> ${m.content ?? m}`).join("\n");
   const content =
-    `<h2>${timestamp}</h2>\n\n| Combatant | Initiative |\n| --- | --- |\n${rows}` +
+    `## ${timestamp}\n\n| Combatant | Initiative |\n| --- | --- |\n${rows}` +
     (chatLog ? `\n\n### Chat Log\n${chatLog}` : "");
   await journal.createEmbeddedDocuments("JournalEntryPage", [
     {
