@@ -126,8 +126,9 @@ async function logCombat(combat, messages) {
     .join("\n");
   const chatLog = messages
     .map((m) => {
+      const actor = m.alias ?? m.speaker?.alias ?? "";
       const flavor = m.flavor ? `${m.flavor}: ` : "";
-      return `> ${flavor}${m.content ?? ""}`;
+      return `> ${actor ? `${actor}: ` : ""}${flavor}${m.content ?? ""}`;
     })
     .join("\n");
   const content =
