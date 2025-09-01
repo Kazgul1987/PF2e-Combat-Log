@@ -40,6 +40,10 @@ Hooks.on("chatMessage", (chatLog, message, chatData) => {
     }
     return false;
   }
+  if (message.startsWith("/downloadavatar")) {
+    downloadSelectedTokenAvatar();
+    return false;
+  }
   return true;
 });
 
@@ -77,6 +81,34 @@ function collectChatMessages(combat) {
       m.timestamp <= end &&
       (m.speaker?.token || m.flags?.combat === combat.id)
   );
+}
+
+async function downloadSelectedTokenAvatar() {
+  const token = canvas?.tokens?.controlled[0];
+  if (!token) {
+    ui.notifications.warn("No token selected.");
+    return;
+  }
+  const src = token.document?.texture?.src;
+  if (!src) {
+    ui.notifications.error("Token has no image.");
+    return;
+  }
+  try {
+    const response = await fetch(src);
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = src.split("/").pop() || "avatar";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("PF2e Combat Log | Failed to download avatar:", err);
+    ui.notifications.error("Failed to download avatar.");
+  }
 }
 
 async function updateIndexPage(journal) {
