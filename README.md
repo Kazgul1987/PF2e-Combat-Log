@@ -23,3 +23,7 @@ A simple [Foundry VTT](https://foundryvtt.com/) module for the Pathfinder Second
 ## Development
 The module's source lives in the `module/` directory. To package the module, zip the `module` folder and distribute it together with `module.json`.
 
+## License
+
+Released under the MIT License.
+
