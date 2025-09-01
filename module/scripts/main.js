@@ -53,10 +53,15 @@ Hooks.on("createChatMessage", (message, context, userId) => {
 });
 
 function getSelectedCombats() {
-  const ids = ui.combat?.element
-    .find("li.combat[data-combat-id].active, li.combat[data-combat-id].expanded")
-    .map((_, el) => el.dataset.combatId)
-    .toArray();
+  // In Foundry V11 `ui.combat.element` is a regular DOM element instead of a
+  // jQuery object. Use `querySelectorAll` and `Array.from` to collect the
+  // selected combat IDs in a version‑agnostic way.
+  const ids = Array.from(
+    ui.combat?.element.querySelectorAll(
+      "li.combat[data-combat-id].active, li.combat[data-combat-id].expanded"
+    ) ?? []
+  ).map((el) => el.dataset.combatId);
+
   if (ids.length === 0) {
     return game.combat ? [game.combat] : [];
   }
