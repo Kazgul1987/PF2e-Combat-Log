@@ -4,6 +4,7 @@ Hooks.once("init", () => {
 
 let combatLogFolderId;
 let combatLogJournalId;
+let combatMessages = [];
 
 Hooks.once("ready", async () => {
   console.log("PF2e Combat Log | Ready");
@@ -26,6 +27,12 @@ Hooks.once("ready", async () => {
   combatLogJournalId = journal.id;
 });
 
+Hooks.on("chatMessage", (chatLog, message, chatData) => {
+  if (game.combat?.started) {
+    combatMessages.push(message);
+  }
+});
+
 Hooks.on("createChatMessage", (message, context, userId) => {
   console.log("PF2e Combat Log | Chat message created:", message);
 });
@@ -41,7 +48,10 @@ async function logCombat(combat) {
         `| ${c.token?.uuid ?? c.actor?.uuid ?? c.uuid} | ${c.initiative ?? ""} |`
     )
     .join("\n");
-  const content = `| Combatant | Initiative |\n| --- | --- |\n${rows}`;
+  const chatLog = combatMessages.map((m) => `> ${m}`).join("\n");
+  const content =
+    `| Combatant | Initiative |\n| --- | --- |\n${rows}` +
+    (chatLog ? `\n\n### Chat Log\n${chatLog}` : "");
   await journal.createEmbeddedDocuments("JournalEntryPage", [
     {
       name: new Date().toLocaleString(),
@@ -52,6 +62,7 @@ async function logCombat(combat) {
       },
     },
   ]);
+  combatMessages = [];
 }
 
 Hooks.on("updateCombat", (combat, changed, options, userId) => {
