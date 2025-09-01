@@ -4,7 +4,7 @@ Hooks.once("init", () => {
 
 let combatLogFolderId;
 let combatLogJournalId;
-let combatMessages = [];
+const combatLogs = new Map();
 
 Hooks.once("ready", async () => {
   console.log("PF2e Combat Log | Ready");
@@ -28,14 +28,51 @@ Hooks.once("ready", async () => {
 });
 
 Hooks.on("chatMessage", (chatLog, message, chatData) => {
-  if (game.combat?.started) {
-    combatMessages.push(message);
+  if (message.startsWith("/retcombatlog")) {
+    const combats = getSelectedCombats();
+    for (const combat of combats) {
+      let messages = combatLogs.get(combat.id);
+      if (!messages) {
+        messages = collectChatMessages(combat);
+        combatLogs.set(combat.id, messages);
+      }
+      logCombat(combat, messages);
+    }
+    return false;
   }
+  return true;
 });
 
 Hooks.on("createChatMessage", (message, context, userId) => {
   console.log("PF2e Combat Log | Chat message created:", message);
+  if (game.combat?.started) {
+    const id = game.combat.id;
+    if (!combatLogs.has(id)) combatLogs.set(id, []);
+    combatLogs.get(id).push(message);
+  }
 });
+
+function getSelectedCombats() {
+  const ids = ui.combat?.element
+    .find("li.combat[data-combat-id].active, li.combat[data-combat-id].expanded")
+    .map((_, el) => el.dataset.combatId)
+    .toArray();
+  if (ids.length === 0) {
+    return game.combat ? [game.combat] : [];
+  }
+  return ids.map((id) => game.combats.get(id)).filter(Boolean);
+}
+
+function collectChatMessages(combat) {
+  const start = combat.startTime ?? combat.updateTime;
+  const end = combat.endTime ?? combat.updateTime;
+  return game.messages.contents.filter(
+    (m) =>
+      m.timestamp >= start &&
+      m.timestamp <= end &&
+      (m.speaker?.token || m.flags?.combat === combat.id)
+  );
+}
 
 async function updateIndexPage(journal) {
   const indexName = "Encounter Index";
@@ -67,10 +104,12 @@ async function updateIndexPage(journal) {
   }
 }
 
-async function logCombat(combat) {
+async function logCombat(combat, messages) {
   if (!combatLogJournalId) return;
   const journal = game.journal.get(combatLogJournalId);
   if (!journal) return;
+
+  messages = messages ?? collectChatMessages(combat);
 
   const timestamp = new Date().toLocaleString();
   const rows = combat.combatants
@@ -80,7 +119,7 @@ async function logCombat(combat) {
       return `| @UUID[${uuid}]{${name}} | ${c.initiative ?? ""} |`;
     })
     .join("\n");
-  const chatLog = combatMessages.map((m) => `> ${m}`).join("\n");
+  const chatLog = messages.map((m) => `> ${m.content ?? m}`).join("\n");
   const content =
     `<h2>${timestamp}</h2>\n\n| Combatant | Initiative |\n| --- | --- |\n${rows}` +
     (chatLog ? `\n\n### Chat Log\n${chatLog}` : "");
@@ -97,15 +136,15 @@ async function logCombat(combat) {
 
   await updateIndexPage(journal);
 
-  combatMessages = [];
+  combatLogs.set(combat.id, messages);
 }
 
 Hooks.on("updateCombat", (combat, changed, options, userId) => {
   if (Object.prototype.hasOwnProperty.call(changed, "active") && !changed.active) {
-    logCombat(combat);
+    logCombat(combat, combatLogs.get(combat.id));
   }
 });
 
 Hooks.on("deleteCombat", (combat, options, userId) => {
-  logCombat(combat);
+  logCombat(combat, combatLogs.get(combat.id));
 });
