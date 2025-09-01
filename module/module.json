@@ -1,5 +1,5 @@
 {
-  "name": "pf2e-combat-log",
+  "id": "pf2e-combat-log",
   "title": "PF2e Combat Log",
   "description": "Adds a combat log for Pathfinder 2E in Foundry VTT.",
   "version": "0.1.0",
@@ -9,8 +9,19 @@
   "esmodules": ["scripts/main.js"],
   "packs": [],
   "languages": [],
+  "manifestPlusVersion": "1.2.0",
+  "url": "https://github.com/user/PF2e-Combat-Log",
+  "manifest": "https://github.com/user/PF2e-Combat-Log/releases/latest/download/module.json",
+  "manifest+": "https://github.com/user/PF2e-Combat-Log/releases/latest/download/module.json",
+  "download": "https://github.com/user/PF2e-Combat-Log/releases/latest/download/module.zip",
+  "relationships": {
+    "systems": [
+      { "id": "pf2e" }
+    ],
+    "requires": []
+  },
   "compatibility": {
-    "minimum": "10",
-    "verified": "10"
+    "minimum": "13",
+    "verified": "13"
   }
 }
