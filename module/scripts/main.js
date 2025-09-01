@@ -29,3 +29,37 @@ Hooks.once("ready", async () => {
 Hooks.on("createChatMessage", (message, context, userId) => {
   console.log("PF2e Combat Log | Chat message created:", message);
 });
+
+async function logCombat(combat) {
+  if (!combatLogJournalId) return;
+  const journal = game.journal.get(combatLogJournalId);
+  if (!journal) return;
+
+  const rows = combat.combatants
+    .map(
+      (c) =>
+        `| ${c.token?.uuid ?? c.actor?.uuid ?? c.uuid} | ${c.initiative ?? ""} |`
+    )
+    .join("\n");
+  const content = `| Combatant | Initiative |\n| --- | --- |\n${rows}`;
+  await journal.createEmbeddedDocuments("JournalEntryPage", [
+    {
+      name: new Date().toLocaleString(),
+      type: "text",
+      text: {
+        content,
+        format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.MARKDOWN,
+      },
+    },
+  ]);
+}
+
+Hooks.on("updateCombat", (combat, changed, options, userId) => {
+  if (Object.prototype.hasOwnProperty.call(changed, "active") && !changed.active) {
+    logCombat(combat);
+  }
+});
+
+Hooks.on("deleteCombat", (combat, options, userId) => {
+  logCombat(combat);
+});
