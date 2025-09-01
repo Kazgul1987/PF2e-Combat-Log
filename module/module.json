@@ -2,7 +2,7 @@
   "id": "pf2e-combat-log",
   "title": "PF2e Combat Log",
   "description": "Adds a combat log for Pathfinder 2E in Foundry VTT.",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "authors": [
     { "name": "Kazgul1987" }
   ],
