@@ -40,7 +40,7 @@ Hooks.on("chatMessage", (chatLog, message, chatData) => {
     }
     return false;
   }
-  if (message.startsWith("/downloadavatar")) {
+  if (message.startsWith("/downloadportrait")) {
     downloadSelectedTokenAvatar();
     return false;
   }
@@ -89,9 +89,13 @@ async function downloadSelectedTokenAvatar() {
     ui.notifications.warn("No token selected.");
     return;
   }
-  const src = token.document?.texture?.src;
+  if (!token.actor) {
+    ui.notifications.error("Token has no actor.");
+    return;
+  }
+  const src = token.actor?.img;
   if (!src) {
-    ui.notifications.error("Token has no image.");
+    ui.notifications.error("Actor has no image.");
     return;
   }
   try {
@@ -100,7 +104,7 @@ async function downloadSelectedTokenAvatar() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = src.split("/").pop() || "avatar";
+    a.download = src.split("/").pop() || "portrait";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
